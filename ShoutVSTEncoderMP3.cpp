@@ -4,6 +4,7 @@
 #include "ShoutVST.h"
 #include "ShoutVSTEncoderMP3.h"
 #include <shlwapi.h>
+#pragma comment (lib, "Shlwapi")
 
 // note to self
 #define STEREO 2

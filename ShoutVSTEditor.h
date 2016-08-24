@@ -1,7 +1,7 @@
 #pragma once
 #include <windows.h>
-#include "common/aeffeditor.hpp"
-#include "common/audioeffectx.h"
+#include <aeffeditor.h>
+#include "audioeffectx.h"
 
 class ShoutVST;
 
@@ -11,8 +11,8 @@ class ShoutVSTEditor :
 public:
   ShoutVSTEditor(AudioEffectX *effect);
   virtual ~ShoutVSTEditor();
-  virtual long open(void *ptr);
-  virtual long getRect(ERect **erect);
+  virtual bool open(void *ptr);
+  virtual bool getRect(ERect **erect);
 
   INT_PTR DialogProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 

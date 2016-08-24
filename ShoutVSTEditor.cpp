@@ -146,7 +146,7 @@ INT_PTR ShoutVSTEditor::DialogProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
   return FALSE;
 }
 
-long ShoutVSTEditor::open( void *ptr )
+bool ShoutVSTEditor::open( void *ptr )
 {
   pVST->Log("[editor] open\r\n");
   hwndParent = (HWND)ptr;
@@ -156,7 +156,7 @@ long ShoutVSTEditor::open( void *ptr )
   return hwndDialog != NULL;
 }
 
-long ShoutVSTEditor::getRect(ERect **erect)
+bool ShoutVSTEditor::getRect(ERect **erect)
 {
 //  pVST->Log("[editor] getRect\r\n");
   RECT rc;

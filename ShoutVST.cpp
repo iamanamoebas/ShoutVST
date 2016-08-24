@@ -3,7 +3,7 @@
 #include <windows.h>
 #include "ShoutVST.h"
 
-extern "C" BOOL pthread_win32_process_attach_np();
+//extern "C" BOOL pthread_win32_process_attach_np();
 
 class CLock {
   CRITICAL_SECTION * cs;
@@ -27,7 +27,7 @@ ShoutVST::ShoutVST (audioMasterCallback audioMaster)
   setNumInputs(2);
   setNumOutputs(2);
   setUniqueID('SHOU');
-  canMono ();
+  //canMono ();
   canProcessReplacing();
   programsAreChunks(true);
 
@@ -45,7 +45,8 @@ ShoutVST::ShoutVST (audioMasterCallback audioMaster)
   editor = pEditor;
   setEditor(editor);
 
-  pthread_win32_process_attach_np();
+  //we are not linking pthread
+  //pthread_win32_process_attach_np();
 }
 
 bool ShoutVST::getEffectName(char* name)
@@ -160,7 +161,7 @@ void ShoutVST::process (float **inputs, float **outputs, long sampleFrames)
   }
 }
 
-void ShoutVST::processReplacing(float **inputs, float **outputs, long sampleFrames)
+void ShoutVST::processReplacing(float **inputs, float **outputs, VstInt32 sampleFrames)
 {
   if(!inputs) return;
   if(!outputs) return;
@@ -325,7 +326,7 @@ void ShoutVST::AppendSerialize( char ** szString, char * szKey, int nValue )
   *szString = szNew;
 }
 
-long ShoutVST::getChunk( void** data, bool isPreset /*= false */ )
+VstInt32 ShoutVST::getChunk( void** data, bool isPreset /*= false */ )
 {
   Log("getChunk(%d)\r\n",isPreset);
 
@@ -346,7 +347,7 @@ long ShoutVST::getChunk( void** data, bool isPreset /*= false */ )
   return strlen(sz);
 }
 
-long ShoutVST::setChunk( void* data, long byteSize, bool isPreset /*= false */ )
+VstInt32 ShoutVST::setChunk( void* data, long byteSize, bool isPreset /*= false */ )
 {
   Log("setChunk(%d,%d)\r\n",byteSize,isPreset);
   

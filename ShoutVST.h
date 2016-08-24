@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/audioeffectx.h"
+#include "audioeffectx.h"
 #include "shout/shout.h"
 #include "ShoutVSTEditor.h"
 
@@ -16,7 +16,7 @@ public:
 
   // Processes
   virtual void process(float **inputs, float **outputs, long sampleFrames);
-  virtual void ShoutVST::processReplacing(float **inputs, float **outputs, long sampleFrames);
+  virtual void ShoutVST::processReplacing(float **inputs, float **outputs, VstInt32 sampleFrames);
 
   virtual bool getEffectName(char* name);
   virtual bool getVendorString(char* text);
@@ -46,9 +46,9 @@ protected:
   void ProcessICECasting(float **inputs, long sampleFrames);
   void StopICECasting();
 
-  virtual long getChunk( void** data, bool isPreset = false );
+  virtual VstInt32 getChunk( void** data, bool isPreset = false );
 
-  virtual long setChunk( void* data, long byteSize, bool isPreset = false );
+  virtual VstInt32 setChunk( void* data, long byteSize, bool isPreset = false );
 
   void AppendSerialize( char ** szString, char * szKey, char * szValue );
   void AppendSerialize( char ** szString, char * szKey, int szValue );

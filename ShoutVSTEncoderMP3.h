@@ -1,6 +1,6 @@
 #pragma once
 #include "shoutvstencoder.h"
-#include "blade/BladeMP3EncDLL.h"
+#include "BladeMP3EncDLL.h"
 
 class ShoutVSTEncoderMP3 :
   public ShoutVSTEncoder
