@@ -17,5 +17,5 @@ echo.
 echo You can find VC solution project in the "build" subfolder.
 cd ..
 echo.
-build\ShoutVST.sln
+build\ShoutVST_Solution.sln
 PAUSE

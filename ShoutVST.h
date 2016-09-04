@@ -1,67 +1,46 @@
 #pragma once
-
-#include "audioeffectx.h"
-#include "shout/shout.h"
+#include <audioeffectx.h>
+#include <shout/shout.h>
 #include "ShoutVSTEditor.h"
-
-#include "ShoutVSTEncoderOGG.h"
 #include "ShoutVSTEncoderMP3.h"
+#include "ShoutVSTEncoderOGG.h"
 
-//-------------------------------------------------------------------------------------------------------
-class ShoutVST : public AudioEffectX
-{
-public:
-  ShoutVST(audioMasterCallback audioMaster);
+#include <mutex>
+
+using std::recursive_mutex;
+using std::lock_guard;
+
+class ShoutVST : public AudioEffectX {
+ public:
+  explicit ShoutVST(audioMasterCallback audioMaster);
   ~ShoutVST();
-
-  // Processes
-  virtual void process(float **inputs, float **outputs, long sampleFrames);
-  virtual void ShoutVST::processReplacing(float **inputs, float **outputs, VstInt32 sampleFrames);
-
-  virtual bool getEffectName(char* name);
-  virtual bool getVendorString(char* text);
-  virtual bool getProductString(char* text);
-
-  virtual void setParameter (long index, float value);
-  virtual float getParameter (long index);
-  virtual void getParameterLabel (long index, char *label);
-  virtual void getParameterDisplay (long index, char *text);
-  virtual void getParameterName (long index, char *text);
-
-  virtual VstPlugCategory getPlugCategory () { return kPlugCategEffect; }
-
-  void Log(const char *fmt, ...);
-  //static void PrintF(const char *fmt, ...);
-
+  virtual void processReplacing(float** inputs, float** outputs,
+                                VstInt32 sampleFrames) override;
+  virtual void setParameter(VstInt32 index, float value) override;
+  virtual float getParameter(VstInt32 index) override;
+  virtual void getParameterDisplay(VstInt32 index, char* text) override;
+  virtual void getParameterName(VstInt32 index, char* text) override;
+  virtual bool getEffectName(char* name) override;
+  virtual bool getVendorString(char* text) override;
+  virtual bool getProductString(char* text) override;
+  virtual VstPlugCategory getPlugCategory() override;
+  virtual VstInt32 getVendorVersion() override;
   bool IsConnected();
-  bool SendDataToICE(unsigned char *, int);
+  bool SendDataToICE(unsigned char*, VstInt32);
   bool CanDoMP3();
-  int GetQuality(); // returns 0 - 10
-  void UpdateMetadata( char * sz );
+  int GetBitrate();
+  int GetTargetSampleRate();
+  void UpdateMetadata(const char* sz);
 
-  CRITICAL_SECTION critsec;
-
-protected:
+ private:
+  recursive_mutex shout_mtx;
   bool InitializeICECasting();
-  void ProcessICECasting(float **inputs, long sampleFrames);
   void StopICECasting();
-
-  virtual VstInt32 getChunk( void** data, bool isPreset = false );
-
-  virtual VstInt32 setChunk( void* data, long byteSize, bool isPreset = false );
-
-  void AppendSerialize( char ** szString, char * szKey, char * szValue );
-  void AppendSerialize( char ** szString, char * szKey, int szValue );
-
-  bool bCanDoMP3;
-
-  ShoutVSTEncoder * encSelected;
-  ShoutVSTEncoderOGG encOGG;
-  ShoutVSTEncoderMP3 encMP3;
-
-  ShoutVSTEditor * pEditor;
-
-private:
-  shout_t * pShout;
-  bool bStreamConnected;
+  bool bCanDoMP3 = false;
+  bool bStreamConnected = false;
+  ShoutVSTEncoder* encSelected = nullptr;
+  ShoutVSTEncoderOGG* encOGG = nullptr;
+  ShoutVSTEncoderMP3* encMP3 = nullptr;
+  ShoutVSTEditor* pEditor = nullptr;
+  shout_t* pShout = nullptr;
 };

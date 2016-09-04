@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project (ShoutVST)
+project (ShoutVST_Solution)
 
 set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ShoutVST_DLL")
 
@@ -14,17 +14,11 @@ if((${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC))
   set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${MYFLAGS}")
 endif()
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/comp_definitions.h.in ${CMAKE_CURRENT_SOURCE_DIR}/comp_definitions.h @ONLY)
+
+
 SET(WITH_OGG ON CACHE BOOL "libshout: WITH_OGG option")
 SET(WITH_VORBIS ON CACHE BOOL "libshout: WITH_VORBIS option")
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/deps)
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/LIB)
-
-aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR} SOURCES)
-
-list (APPEND SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/ShoutVST.rc)
-
-add_library(${PROJECT_NAME}  SHARED ${SOURCES})
-
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} VST_SDK shout vorbis lame_enc)
-
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/CMake)

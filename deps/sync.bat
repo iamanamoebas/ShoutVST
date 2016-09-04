@@ -20,6 +20,14 @@ if not exist libshout-CMAKE (
 ) else (
     (cd libmp3lame-CMAKE) && (git pull) && (cd ..)
 )
+
+echo FLTK...
+if not exist FLTK (
+    (git clone https://github.com/IngwiePhoenix/FLTK.git)
+) else (
+    (cd FLTK) && (git pull) && (cd ..)
+)
+
 echo VST_SDK_2.4...
 if not exist VST_SDK_2.4 (
     (git clone https://github.com/R-Tur/VST_SDK_2.4.git)

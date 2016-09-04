@@ -1,18 +1,40 @@
-ShoutVST is a VST that enables streaming sound into Icecast directly from VST hosts, ideal for streaming live performances directly from applications like Traktor or Ableton without the use of loopback methods.
+**ShoutVST** is a VST that enables streaming sound into Icecast directly from VST hosts, ideal for streaming live performances directly from applications like **Traktor** or **Ableton** without the use of loopback methods. Only Windows is supported at the moment. 
+You can try that precompiled binary (Just copy it into your VST plugins folder):
 
-## Usage ##
-Just copy the .dll into your VST plugin direcory - your host application should be able to recognize it immediately. Open the plugin GUI to edit the options.
+[ShoutVST.dll](http://jsound.org/dl/ShoutVST.zip)
 
-Get the Icecast server from http://www.icecast.org/ to enable streaming.
+![ShoutVST](http://jsound.org/img/ShoutVST.png "ShoutVST")
 
-The VST supports both OGG and MP3 encoding - for MP3 to be available, copy lame\_enc.dll (e.g. from http://www.rarewares.org/mp3-lame-bundle.php ) in your VST directory.
+#Prerequisites#
 
-## Current todos ##
-  * Automatic update of mount file extension when switching encoder.
-  * Save / Load settings from project file
-  * Reset to default settings
+[Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs)
 
-### Possibilities ###
-  * Some more encoding options (i.e. anything else than VBR)
-  * Output volume setting (both for the stream and as a VST output)
-  * MacOSX / Linux version - I'm willing to have amends to the source if someone helps me out.
+[CMake >=3.0](https://cmake.org/download/)
+
+[GIT](https://git-scm.com/download/win)
+
+#Build#
+
+```
+git clone https://github.com/R-Tur/ShoutVST.git
+```
+
+```
+cd ShoutVST
+```
+
+```
+!!make_project!!.bat
+```
+
+In order to re-obtain all dependencies, please refer to 
+```
+ShoutVST/deps/sync.bat
+```
+
+#The Result#
+
+After successfull build the resulting DLL file will be available there (you can copy it into your VST folder):
+```
+ShoutVST\ShoutVST_DLL
+```

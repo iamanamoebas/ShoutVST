@@ -1,44 +1,50 @@
 #pragma once
-#include <windows.h>
 #include <aeffeditor.h>
-#include "audioeffectx.h"
+#include <audioeffectx.h>
+#include <string>
+
+#include "FLUID/ShoutVSTEditorFL.h"
+
+#include <mutex>
+
+using std::recursive_mutex;
 
 class ShoutVST;
 
-class ShoutVSTEditor :
-  public AEffEditor
-{
-public:
-  ShoutVSTEditor(AudioEffectX *effect);
+class ShoutVSTEditor : public AEffEditor {
+ public:
+  explicit ShoutVSTEditor(AudioEffect* effect);
   virtual ~ShoutVSTEditor();
-  virtual bool open(void *ptr);
-  virtual bool getRect(ERect **erect);
 
-  INT_PTR DialogProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+  static void callbackConnect(ShoutVSTEditor* p);
+  static void callbackDisconnect(ShoutVSTEditor* p);
+  static void callbackMetadata(ShoutVSTEditor* p);
 
-  void AppendLog(char *);
-
-  char szHostname[MAX_PATH];
-  int nPort;
-  char szUsername[MAX_PATH];
-  char szPassword[MAX_PATH];
-  char szMountpoint[MAX_PATH];
-  int nProtocol;
-
-  int nEncoder;
-
-  int GetQuality();
-  void SetQuality( int q );
-
-  void RefreshData();
+  virtual bool open(void* ptr) override;
+  virtual void close() override;
+  virtual bool getRect(ERect** erect) override;
+  virtual void idle() override;
   void DisableAccordingly();
+  string GetBitrate();
+  string GetTargetSampleRate();
+  string getHostName() const;
+  unsigned short getPort() const;
+  string getStreamName() const;
+  string getStreamURL() const;
+  string getStreamGenre() const;
+  string getStreamDescription() const;
+  string getStreamArtist() const;
+  string getStreamTitle() const;
+  string getUserName() const;
+  string getPassword() const;
+  string getMountPoint() const;
+  string getEncodingFormat() const;
+  string getStreamMetaData() const;
+  string getProtocol() const;
 
-protected:
-  ShoutVST * pVST;
-  HWND hwndParent;
-  HWND hwndDialog;
-
-  int nQuality;
-
-  char * szLog;
+ private:
+  ShoutVSTEditorFL* shoutVSTEditorFL = nullptr;
+  static recursive_mutex mtx_;
+  ERect r = {};
+  ShoutVST* pVST = nullptr;
 };
