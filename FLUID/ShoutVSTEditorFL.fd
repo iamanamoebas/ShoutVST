@@ -16,7 +16,7 @@ aboutText += "\\n";
 aboutText += "Original idea:\\nhttps://github.com/Gargaj/ShoutVST\\n";
 buffer_about->text(aboutText.c_str());} {}
     Fl_Window about_window {
-      label {About ShoutVST} open selected
+      label {About ShoutVST} open
       private xywh {1352 523 403 288} type Double align 80 hotspot
       code0 {\#include "comp_definitions.h"}
       code1 {\#include <FL/filename.H>} size_range {403 288 403 288} visible
@@ -38,11 +38,11 @@ buffer_about->text(aboutText.c_str());} {}
         code0 {o->labelcolor(FL_DARK_BLUE);}
       }
     }
-    Fl_Window fl_window {open
+    Fl_Window fl_window {open selected
       xywh {992 346 677 480} type Double color 7 align 80 hotspot
       code0 {\#include <string>}
       code1 {using std::string;}
-      code2 {\#include <functional>} size_range {667 486 667 486} visible
+      code2 {\#include <functional>} modal noborder size_range {667 486 667 486} visible
     } {
       Fl_Group group_connection {
         label {Connection:} open
