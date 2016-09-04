@@ -36,7 +36,6 @@ class ShoutVST : public AudioEffectX {
   recursive_mutex shout_mtx;
   bool InitializeICECasting();
   void StopICECasting();
-  bool bCanDoMP3 = false;
   bool bStreamConnected = false;
   ShoutVSTEncoder* encSelected = nullptr;
   ShoutVSTEncoderOGG* encOGG = nullptr;

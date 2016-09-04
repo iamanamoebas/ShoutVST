@@ -21,7 +21,6 @@ ShoutVST::ShoutVST(audioMasterCallback audioMaster)
   canDoubleReplacing(false);
   encMP3 = new ShoutVSTEncoderMP3(this);
   encOGG = new ShoutVSTEncoderOGG(this);
-  bCanDoMP3 = encMP3->Preload();
   encSelected = encMP3;
   pEditor = new ShoutVSTEditor(this);
   setEditor(pEditor);
@@ -160,7 +159,7 @@ bool ShoutVST::SendDataToICE(unsigned char* pData, VstInt32 nLen) {
   return true;
 }
 
-bool ShoutVST::CanDoMP3() { return bCanDoMP3; }
+bool ShoutVST::CanDoMP3() { return true; }
 
 int ShoutVST::GetBitrate() { return std::stoi(pEditor->GetBitrate()); }
 

@@ -20,17 +20,21 @@ ShoutVSTEncoderMP3::ShoutVSTEncoderMP3(ShoutVST* p) : ShoutVSTEncoder(p) {
   bInitialized = false;
 }
 
-extern void* hInstance;
-bool ShoutVSTEncoderMP3::Preload() { return true; }
+ShoutVSTEncoderMP3::~ShoutVSTEncoderMP3() {
+	Close();
+}
 
 bool ShoutVSTEncoderMP3::Initialize() {
   guard lock(mtx_);
+  if (bInitialized) {
+	  return false;
+  }
   bInitialized = false;
 
   hbeStream = NULL;
 
-  BE_VERSION v;
-  beVersion(&v);
+  //BE_VERSION v;
+  //beVersion(&v);
 
   BE_CONFIG cfg;
   memset(&cfg, 0, sizeof(BE_CONFIG));
@@ -62,16 +66,16 @@ bool ShoutVSTEncoderMP3::Initialize() {
 
 bool ShoutVSTEncoderMP3::Close() {
   guard lock(mtx_);
+  if (!bInitialized) {
+	  return true;
+  }
   bInitialized = false;
   DWORD dwWrite = 0;
-  if (beDeinitStream(hbeStream, pMP3Buffer, &dwWrite) != BE_ERR_SUCCESSFUL) {
-    beCloseStream(hbeStream);
-    return false;
-  }
+  beDeinitStream(hbeStream, pMP3Buffer, &dwWrite);
+  beCloseStream(hbeStream);
   pVST->SendDataToICE(pMP3Buffer, dwWrite);
   delete[] pWAVBuffer;
   delete[] pMP3Buffer;
-
   return true;
 }
 

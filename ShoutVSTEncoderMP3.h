@@ -5,7 +5,7 @@
 class ShoutVSTEncoderMP3 : public ShoutVSTEncoder {
  public:
   explicit ShoutVSTEncoderMP3(ShoutVST* p);
-  bool Preload();
+  ~ShoutVSTEncoderMP3();
   bool Initialize();
   bool Close();
   bool Process(float** inputs, VstInt32 sampleFrames);
