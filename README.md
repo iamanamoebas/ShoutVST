@@ -38,3 +38,7 @@ After successfull build the resulting DLL file will be available there (you can 
 ```
 ShoutVST\ShoutVST_DLL
 ```
+
+#Tested Hosts#
+
+Cubase (5.1.1), Reaper (5.22), FL Studio (11.1.0), LMMS (1.1.3)
