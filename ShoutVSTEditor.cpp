@@ -108,7 +108,7 @@ bool ShoutVSTEditor::open(void* parentWindow) {
   shoutVSTEditorFL->show();
 #ifdef _WIN32
   HWND hWnd = (HWND)fl_xid(shoutVSTEditorFL->fl_window);
-  SetWindowLong(hWnd, GWL_STYLE, (GetWindowLong(hWnd, GWL_STYLE) & ~WS_POPUP) | WS_CHILD);
+  //SetWindowLong(hWnd, GWL_STYLE, (GetWindowLong(hWnd, GWL_STYLE) & ~WS_POPUP) | WS_CHILD);
   SetParent(hWnd, (HWND)parentWindow);
 #endif
   shoutVSTEditorFL->fl_window->position(0, 0);
@@ -122,9 +122,8 @@ void ShoutVSTEditor::close() {
 }
 
 bool ShoutVSTEditor::getRect(ERect** erect) {
-  // todo: get actual rect
-  r.right = 677;
-  r.bottom = 480;
+  r.right = shoutVSTEditorFL->fl_window->decorated_w();
+  r.bottom = shoutVSTEditorFL->fl_window->decorated_h();
   *erect = &r;
   return true;
 }
