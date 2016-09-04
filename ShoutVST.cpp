@@ -27,10 +27,11 @@ ShoutVST::ShoutVST(audioMasterCallback audioMaster)
 }
 
 ShoutVST::~ShoutVST() {
-  StopICECasting();
+  setParameter(0, 0.0);
+  pEditor->close();
+  setEditor(nullptr);
   delete encMP3;
   delete encOGG;
-  setEditor(nullptr);
   delete pEditor;
 }
 
