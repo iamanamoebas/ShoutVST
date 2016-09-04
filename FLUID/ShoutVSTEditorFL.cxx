@@ -210,7 +210,6 @@ ShoutVSTEditorFL::ShoutVSTEditorFL() {
       } // Fl_Button* o
       o->end();
     } // Fl_Group* o
-    fl_window->set_modal();
     fl_window->clear_border();
     fl_window->size_range(667, 486, 667, 486);
     fl_window->end();

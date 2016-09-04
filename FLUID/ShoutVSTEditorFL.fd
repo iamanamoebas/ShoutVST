@@ -42,7 +42,7 @@ buffer_about->text(aboutText.c_str());} {}
       xywh {992 346 677 480} type Double color 7 align 80 hotspot
       code0 {\#include <string>}
       code1 {using std::string;}
-      code2 {\#include <functional>} modal noborder size_range {667 486 667 486} visible
+      code2 {\#include <functional>} noborder size_range {667 486 667 486} visible
     } {
       Fl_Group group_connection {
         label {Connection:} open
