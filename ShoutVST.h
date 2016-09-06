@@ -1,6 +1,6 @@
 #pragma once
 #include <audioeffectx.h>
-#include <shout/shout.h>
+#include "LibShoutWrapper.h"
 #include "ShoutVSTEditor.h"
 #include "ShoutVSTEncoderMP3.h"
 #include "ShoutVSTEncoderOGG.h"
@@ -26,20 +26,16 @@ class ShoutVST : public AudioEffectX {
   virtual VstPlugCategory getPlugCategory() override;
   virtual VstInt32 getVendorVersion() override;
   bool IsConnected();
-  bool SendDataToICE(unsigned char*, VstInt32);
-  bool CanDoMP3();
   int GetBitrate();
   int GetTargetSampleRate();
-  void UpdateMetadata(const char* sz);
+  void UpdateMetadata(const string& metadata);
 
  private:
-  recursive_mutex shout_mtx;
-  bool InitializeICECasting();
-  void StopICECasting();
+  recursive_mutex mtx;
   bool bStreamConnected = false;
   ShoutVSTEncoder* encSelected = nullptr;
   ShoutVSTEncoderOGG* encOGG = nullptr;
   ShoutVSTEncoderMP3* encMP3 = nullptr;
   ShoutVSTEditor* pEditor = nullptr;
-  shout_t* pShout = nullptr;
+  LibShoutWrapper libShoutWrapper;
 };

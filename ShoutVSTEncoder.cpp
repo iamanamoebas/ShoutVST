@@ -1,5 +1,5 @@
 #include "ShoutVSTEncoder.h"
 
-ShoutVSTEncoder::ShoutVSTEncoder(ShoutVST* p) { pVST = p; }
+ShoutVSTEncoder::ShoutVSTEncoder(LibShoutWrapper &ls) : libshout(ls) {}
 
 ShoutVSTEncoder::~ShoutVSTEncoder() {}

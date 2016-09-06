@@ -4,8 +4,10 @@
 
 class ShoutVSTEncoderOGG : public ShoutVSTEncoder {
  public:
-  explicit ShoutVSTEncoderOGG(ShoutVST* p);
-  bool Initialize();
+  ShoutVSTEncoderOGG(LibShoutWrapper& ls);
+  ~ShoutVSTEncoderOGG();
+  bool Initialize(const int bitrate, const int samplerate,
+                  const int target_samplerate);
   bool Close();
   bool Process(float** inputs, VstInt32 sampleFrames);
 
@@ -22,6 +24,4 @@ class ShoutVSTEncoderOGG : public ShoutVSTEncoder {
 
   vorbis_dsp_state vd; /* central working state for the packet->PCM decoder */
   vorbis_block vb;     /* local working space for packet->PCM decode */
-
-  bool bInitialized;
 };

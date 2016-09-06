@@ -41,9 +41,7 @@ void ShoutVSTEditor::callbackMetadata(ShoutVSTEditor* p) {
   p->pVST->UpdateMetadata(metadata.c_str());
 }
 
-void ShoutVSTEditor::idle() {
-	Fl::wait(0);
-}
+void ShoutVSTEditor::idle() { Fl::wait(0); }
 
 string ShoutVSTEditor::getStreamMetaData() const {
   return shoutVSTEditorFL->getStreamMetaData();
@@ -108,7 +106,8 @@ bool ShoutVSTEditor::open(void* parentWindow) {
   shoutVSTEditorFL->show();
 #ifdef _WIN32
   HWND hWnd = (HWND)fl_xid(shoutVSTEditorFL->fl_window);
-  //SetWindowLong(hWnd, GWL_STYLE, (GetWindowLong(hWnd, GWL_STYLE) & ~WS_POPUP) | WS_CHILD);
+  // SetWindowLong(hWnd, GWL_STYLE, (GetWindowLong(hWnd, GWL_STYLE) & ~WS_POPUP)
+  // | WS_CHILD);
   SetParent(hWnd, (HWND)parentWindow);
 #endif
   shoutVSTEditorFL->fl_window->position(0, 0);

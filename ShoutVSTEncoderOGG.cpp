@@ -1,17 +1,18 @@
-#include "ShoutVST.h"
 #include "ShoutVSTEncoderOGG.h"
 
-ShoutVSTEncoderOGG::ShoutVSTEncoderOGG(ShoutVST* p) : ShoutVSTEncoder(p) {
-  bInitialized = false;
-}
+ShoutVSTEncoderOGG::ShoutVSTEncoderOGG(LibShoutWrapper& ls)
+    : ShoutVSTEncoder(ls) {}
 
-bool ShoutVSTEncoderOGG::Initialize() {
+ShoutVSTEncoderOGG::~ShoutVSTEncoderOGG() { Close(); }
+
+bool ShoutVSTEncoderOGG::Initialize(const int bitrate, const int samplerate,
+                                    const int target_samplerate) {
   guard lock(mtx_);
   bInitialized = false;
   int ret = 0;
   vorbis_info_init(&vi);
-  long sample = (long)pVST->updateSampleRate();
-  long br = pVST->GetBitrate() * 1000;
+  long sample = (long)samplerate;
+  long br = bitrate * 1000;
   // ret = vorbis_encode_init_vbr(&vi,2,sample,10 / 10.0f);
   ret = vorbis_encode_init(&vi, 2, sample, br, br, br);
   if (ret) {
@@ -114,7 +115,7 @@ bool ShoutVSTEncoderOGG::Process(float** inputs, VstInt32 sampleFrames) {
 bool ShoutVSTEncoderOGG::SendOGGPageToICE(ogg_page* og) {
   guard lock(mtx_);
   if (!bInitialized) return false;
-  if (!pVST->SendDataToICE(og->header, og->header_len)) return false;
-  if (!pVST->SendDataToICE(og->body, og->body_len)) return false;
+  if (!libshout.SendDataToICE(og->header, og->header_len)) return false;
+  if (!libshout.SendDataToICE(og->body, og->body_len)) return false;
   return true;
 }

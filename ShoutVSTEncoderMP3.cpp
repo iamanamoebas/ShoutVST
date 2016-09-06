@@ -1,7 +1,6 @@
-#include "ShoutVST.h"
+#include "ShoutVSTEncoderMP3.h"
 #include <algorithm>
 #include <string>
-#include "ShoutVSTEncoderMP3.h"
 
 #ifdef min
 #undef min
@@ -14,27 +13,23 @@
 // note to self
 #define STEREO 2
 
-ShoutVSTEncoderMP3::ShoutVSTEncoderMP3(ShoutVST* p) : ShoutVSTEncoder(p) {
-  pMP3Buffer = NULL;
-  pWAVBuffer = NULL;
-  bInitialized = false;
-}
+ShoutVSTEncoderMP3::ShoutVSTEncoderMP3(LibShoutWrapper& ls)
+    : ShoutVSTEncoder(ls) {}
 
-ShoutVSTEncoderMP3::~ShoutVSTEncoderMP3() {
-	Close();
-}
+ShoutVSTEncoderMP3::~ShoutVSTEncoderMP3() { Close(); }
 
-bool ShoutVSTEncoderMP3::Initialize() {
+bool ShoutVSTEncoderMP3::Initialize(const int bitrate, const int samplerate,
+                                    const int target_samplerate) {
   guard lock(mtx_);
   if (bInitialized) {
-	  return false;
+    return false;
   }
   bInitialized = false;
 
   hbeStream = NULL;
 
-  //BE_VERSION v;
-  //beVersion(&v);
+  // BE_VERSION v;
+  // beVersion(&v);
 
   BE_CONFIG cfg;
   memset(&cfg, 0, sizeof(BE_CONFIG));
@@ -43,10 +38,10 @@ bool ShoutVSTEncoderMP3::Initialize() {
 
   cfg.format.LHV1.dwStructVersion = 1;
   cfg.format.LHV1.dwStructSize = sizeof(BE_CONFIG);
-  cfg.format.LHV1.dwSampleRate = pVST->updateSampleRate();
+  cfg.format.LHV1.dwSampleRate = samplerate;
   cfg.format.LHV1.nMode = BE_MP3_MODE_JSTEREO;
-  cfg.format.LHV1.dwBitrate = pVST->GetBitrate();
-  cfg.format.LHV1.dwReSampleRate = pVST->GetTargetSampleRate();
+  cfg.format.LHV1.dwBitrate = bitrate;
+  cfg.format.LHV1.dwReSampleRate = target_samplerate;
   cfg.format.LHV1.dwMpegVersion = MPEG1;
   cfg.format.LHV1.nPreset = LQP_CBR;
 
@@ -67,13 +62,13 @@ bool ShoutVSTEncoderMP3::Initialize() {
 bool ShoutVSTEncoderMP3::Close() {
   guard lock(mtx_);
   if (!bInitialized) {
-	  return true;
+    return true;
   }
   bInitialized = false;
   DWORD dwWrite = 0;
   beDeinitStream(hbeStream, pMP3Buffer, &dwWrite);
   beCloseStream(hbeStream);
-  pVST->SendDataToICE(pMP3Buffer, dwWrite);
+  libshout.SendDataToICE(pMP3Buffer, dwWrite);
   delete[] pWAVBuffer;
   delete[] pMP3Buffer;
   return true;
@@ -106,7 +101,7 @@ bool ShoutVSTEncoderMP3::Process(float** inputs, VstInt32 sampleFrames) {
         return false;
       }
 
-      if (!pVST->SendDataToICE(pMP3Buffer, dwWrite)) return false;
+      if (!libshout.SendDataToICE(pMP3Buffer, dwWrite)) return false;
       dwSamplesSoFar = 0;
     }
 
