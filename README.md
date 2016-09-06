@@ -1,7 +1,9 @@
 **ShoutVST** is a VST that enables streaming sound into Icecast directly from VST hosts, ideal for streaming live performances directly from applications like **Traktor** or **Ableton** without the use of loopback methods. Only Windows is supported at the moment. 
 You can try that precompiled binary (Just copy it into your VST plugins folder):
 
-[ShoutVST.dll](http://jsound.org/dl/ShoutVST.zip)
+<a href="http://jsound.org/dl/ShoutVST.zip">
+<img src="http://jsound.org/img/download.jpg" alt="ShoutVST Download" height="175" width="350">
+</a>
 
 ![ShoutVST](http://jsound.org/img/ShoutVST.png "ShoutVST")
 
