@@ -103,7 +103,6 @@ bool ShoutVSTEncoderMP3::Process(float** inputs, VstInt32 sampleFrames) {
       DWORD dwWrite = 0;
       if (beEncodeChunk(hbeStream, dwSamples * STEREO, pWAVBuffer, pMP3Buffer,
                         &dwWrite) != BE_ERR_SUCCESSFUL) {
-        beCloseStream(hbeStream);
         return false;
       }
 
