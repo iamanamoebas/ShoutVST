@@ -26,13 +26,11 @@ void ShoutVSTEditor::callbackConnect(ShoutVSTEditor* p) {
   guard lock(mtx_);
   p->shoutVSTEditorFL->setDisable(true);
   p->pVST->setParameter(0, 1.0f);
-  p->DisableAccordingly();
 }
 
 void ShoutVSTEditor::callbackDisconnect(ShoutVSTEditor* p) {
   guard lock(mtx_);
   p->pVST->setParameter(0, 0.0f);
-  p->DisableAccordingly();
 }
 
 void ShoutVSTEditor::callbackMetadata(ShoutVSTEditor* p) {
