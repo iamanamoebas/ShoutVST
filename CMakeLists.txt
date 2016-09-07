@@ -20,5 +20,5 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/comp_definitions.h.in ${CMAKE_CURRENT
 SET(WITH_OGG ON CACHE BOOL "libshout: WITH_OGG option")
 SET(WITH_VORBIS ON CACHE BOOL "libshout: WITH_VORBIS option")
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/deps)
-
+set_property(TARGET fltk PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/CMake)
