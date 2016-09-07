@@ -16,7 +16,7 @@ class LibShoutWrapper {
 
  public:
   ~LibShoutWrapper();
-  bool LibShoutWrapper::InitializeICECasting(
+  bool InitializeICECasting(
       const string &hostname, const string &protocol, unsigned short port,
       const string &streamname, const string &streamurl,
       const string &streamgenre, const string &streamdescription,
@@ -24,9 +24,9 @@ class LibShoutWrapper {
       const string &artist, const string &title, const string &username,
       const string &password, const string &mountpoint, const string &format);
 
-  void LibShoutWrapper::StopICECasting();
+  void StopICECasting();
 
-  bool LibShoutWrapper::SendDataToICE(unsigned char *pData, size_t nLen);
+  bool SendDataToICE(unsigned char *pData, size_t nLen);
 
-  void LibShoutWrapper::UpdateMetadata(const char *sz);
+  void UpdateMetadata(const char *sz);
 };
