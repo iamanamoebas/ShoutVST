@@ -14,7 +14,8 @@ if((${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC))
   set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${MYFLAGS}")
 endif()
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/comp_definitions.h.in ${CMAKE_CURRENT_SOURCE_DIR}/comp_definitions.h @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/comp_definitions.h.in ${CMAKE_CURRENT_BINARY_DIR}/comp_definitions.h @ONLY)
+include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
 
 SET(WITH_OGG ON CACHE BOOL "libshout: WITH_OGG option")
