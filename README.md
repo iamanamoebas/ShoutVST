@@ -29,9 +29,18 @@ cd ShoutVST
 !!make_project!!.bat
 ```
 
-In order to re-obtain all dependencies, please refer to 
+#Build (x64)#
+
 ```
-ShoutVST/deps/sync.bat
+mkdir build64
+```
+
+```
+cd build64
+```
+
+```
+cmake -G "Visual Studio 14 2015 Win64" ..
 ```
 
 #The Result#
