@@ -43,6 +43,19 @@ cd build64
 cmake -G "Visual Studio 14 2015 Win64" ..
 ```
 
+#Linux Build (e.g. UBUNTU)#
+
+```
+sudo apt-get install libx11-dev
+```
+
+```
+mkdir build
+cd build
+cmake ..
+make
+```
+
 #The Result#
 
 After successfull build the resulting DLL file will be available there (you can copy it into your VST folder):
