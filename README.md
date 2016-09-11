@@ -50,6 +50,12 @@ sudo apt-get install libx11-dev
 ```
 
 ```
+cd deps
+./sync.sh
+cd ..
+```
+
+```
 mkdir build
 cd build
 cmake ..
