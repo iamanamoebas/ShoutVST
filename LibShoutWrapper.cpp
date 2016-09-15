@@ -98,13 +98,13 @@ bool LibShoutWrapper::InitializeICECasting(
 }
 
 void LibShoutWrapper::StopICECasting() {
+  shout_shutdown();
   guard lock(mtx);
   if (pShout) {
     shout_close(pShout);
     shout_free(pShout);
     pShout = nullptr;
   }
-  shout_shutdown();
 }
 
 bool LibShoutWrapper::SendDataToICE(unsigned char *pData, size_t nLen) {

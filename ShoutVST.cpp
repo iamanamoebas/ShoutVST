@@ -12,7 +12,7 @@ VstInt32 ShoutVST::getVendorVersion() { return 2100; }
 VstPlugCategory ShoutVST::getPlugCategory() { return kPlugCategEffect; }
 
 ShoutVST::ShoutVST(audioMasterCallback audioMaster)
-	: AudioEffectX(audioMaster, 1, 1) {
+	: AudioEffectX(audioMaster, 1, 0) {
 	setNumInputs(2);
 	setNumOutputs(2);
 	setUniqueID(CCONST('b', 'q', '9', 'e'));
@@ -26,7 +26,7 @@ ShoutVST::ShoutVST(audioMasterCallback audioMaster)
 }
 
 ShoutVST::~ShoutVST() {
-	setParameter(0, 0.0);
+	disconnect();
 	pEditor->close();
 	setEditor(nullptr);
 	delete encMP3;
@@ -47,15 +47,6 @@ void ShoutVST::processReplacing(float** inputs, float** outputs,
 	if (!inputs || !outputs || sampleFrames <= 0) {
 		return;
 	}
-	{
-		guard lock(mtx);
-		if (!bStreamConnected) {
-			return;
-		}
-	}
-	if (!encSelected->Process(inputs, sampleFrames)) {
-		setParameter(0, 0.0);
-	}
 	float* in1 = inputs[0];
 	float* in2 = inputs[1];
 	float* out1 = outputs[0];
@@ -64,18 +55,26 @@ void ShoutVST::processReplacing(float** inputs, float** outputs,
 		out1[i] = in1[i];
 		out2[i] = in1[i];
 	}
+
+	if (!bStreamConnected) {
+		return;
+	}
+
+	if (!encSelected->Process(inputs, sampleFrames)) {
+		disconnect();
+	}
 }
 
-void ShoutVST::setParameter(VstInt32 index, float value) {
-	std::thread t([this, value]() {
-		guard lock(mtx);
-		bool bShouldConnect = (value >= 0.5);
-
-		if (bShouldConnect == bStreamConnected) {
+void ShoutVST::connect() {
+	if (bStreamConnected) {
+		pEditor->DisableAccordingly();
+		return;
+	}
+	std::thread t([this]() {
+		if (bStreamConnected) {
 			pEditor->DisableAccordingly();
 			return;
 		}
-
 		if (pEditor->getEncodingFormat() == "mp3") {
 			encSelected = encMP3;
 		}
@@ -84,66 +83,41 @@ void ShoutVST::setParameter(VstInt32 index, float value) {
 			encSelected = encOGG;
 		}
 
-		if (bShouldConnect) {
-			if (!libShoutWrapper.InitializeICECasting(
-				pEditor->getHostName(), pEditor->getProtocol(),
-				pEditor->getPort(), pEditor->getStreamName(),
-				pEditor->getStreamURL(), pEditor->getStreamGenre(),
-				pEditor->getStreamDescription(), pEditor->GetBitrate(),
-				pEditor->GetTargetSampleRate(), pEditor->getStreamArtist(),
-				pEditor->getStreamTitle(), pEditor->getUserName(),
-				pEditor->getPassword(), pEditor->getMountPoint(),
-				pEditor->getEncodingFormat())) {
-				libShoutWrapper.StopICECasting();
-				pEditor->DisableAccordingly();
-				return;
-			}
-			if (!encSelected->Initialize(GetBitrate(), (const int)updateSampleRate(),
-				GetTargetSampleRate())) {
-				libShoutWrapper.StopICECasting();
-				pEditor->DisableAccordingly();
-				return;
-			}
-
-		}
-		else {
-			bStreamConnected = false;
-			encSelected->Close();
+		if (!libShoutWrapper.InitializeICECasting(
+			pEditor->getHostName(), pEditor->getProtocol(), pEditor->getPort(),
+			pEditor->getStreamName(), pEditor->getStreamURL(),
+			pEditor->getStreamGenre(), pEditor->getStreamDescription(),
+			pEditor->GetBitrate(), pEditor->GetTargetSampleRate(),
+			pEditor->getStreamArtist(), pEditor->getStreamTitle(),
+			pEditor->getUserName(), pEditor->getPassword(),
+			pEditor->getMountPoint(), pEditor->getEncodingFormat())) {
 			libShoutWrapper.StopICECasting();
+			pEditor->DisableAccordingly();
+			return;
+		}
+		if (!encSelected->Initialize(GetBitrate(), (const int)updateSampleRate(),
+			GetTargetSampleRate())) {
+			libShoutWrapper.StopICECasting();
+			pEditor->DisableAccordingly();
+			return;
 		}
 
-		bStreamConnected = bShouldConnect;
+		bStreamConnected = true;
 
 		pEditor->DisableAccordingly();
 	});
 	t.detach();
 }
 
-float ShoutVST::getParameter(VstInt32 index) {
-	return IsConnected() ? 1.0f : 0.0f;
-}
-
-void ShoutVST::getParameterDisplay(VstInt32 index, char* text) {
-	if (!text) {
-		return;
-	}
-	if (IsConnected()) {
-		vst_strncpy(text, "Yes", kVstMaxParamStrLen);
-	}
-	else {
-		vst_strncpy(text, "No", kVstMaxProductStrLen);
-	}
+void ShoutVST::disconnect() {
+	encSelected->Close();
+	libShoutWrapper.StopICECasting();
+	bStreamConnected = false;
+	pEditor->DisableAccordingly();
 }
 
 void ShoutVST::UpdateMetadata(const string& metadata) {
 	libShoutWrapper.UpdateMetadata(metadata.c_str());
-}
-
-void ShoutVST::getParameterName(VstInt32 index, char* text) {
-	if (!text) {
-		return;
-	}
-	vst_strncpy(text, "Streaming", kVstMaxParamStrLen);
 }
 
 bool ShoutVST::getEffectName(char* name) {
