@@ -108,6 +108,9 @@ void LibShoutWrapper::StopICECasting() {
 }
 
 bool LibShoutWrapper::SendDataToICE(unsigned char *pData, size_t nLen) {
+  if (!pShout) {
+    return false;
+  }
   guard lock(mtx);
   if (!pShout) {
     return false;
@@ -123,6 +126,7 @@ bool LibShoutWrapper::SendDataToICE(unsigned char *pData, size_t nLen) {
 }
 
 void LibShoutWrapper::UpdateMetadata(const char *sz) {
+  if (!pShout) return;
   guard lock(mtx);
   if (!pShout) return;
   shout_metadata_t *meta = shout_metadata_new();
