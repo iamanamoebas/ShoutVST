@@ -132,5 +132,6 @@ string ShoutVSTEditor::GetTargetSampleRate() {
 }
 
 void ShoutVSTEditor::DisableAccordingly() {
+	guard lock(mtx_);
 	shoutVSTEditorFL->setDisable(pVST->IsConnected());
 }
