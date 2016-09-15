@@ -2,7 +2,6 @@
 #include <thread>
 #include "version.h"
 
-typedef std::lock_guard<std::recursive_mutex> guard;
 
 AudioEffect* createEffectInstance(audioMasterCallback audioMaster) {
 	return new ShoutVST(audioMaster);
