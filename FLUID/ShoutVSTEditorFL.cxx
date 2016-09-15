@@ -47,10 +47,10 @@ void ShoutVSTEditorFL::cb_Send(Fl_Button* o, void* v) {
 ShoutVSTEditorFL::ShoutVSTEditorFL() {
   buffer_about = new Fl_Text_Buffer();
   string aboutText = "";
-  aboutText += (string("Built on ") + string(__DATE__) + string(" (") + string(__TIME__) + string(")\n"));
-  aboutText += (string("CMake version: ") + string(CMAKE_VERSION) + string("\n"));
-  aboutText += (string("Compiler: ") + string(CMAKE_GENERATOR) + string("\n"));
-  //aboutText += (string("CPU: ") + string(CMAKE_SYSTEM_PROCESSOR) + string("\n"));
+  aboutText = "Version: "+string(SHOUTVST_FULL_VERSION_STR)+"\n\n";
+  aboutText += ("Built on " + string(__DATE__) + " (" + string(__TIME__) + ")\n");
+  aboutText += ("CMake version: " + string(CMAKE_VERSION) + "\n");
+  aboutText += ("Compiler: " + string(CMAKE_GENERATOR) + "\n");
   aboutText += "\n";
   aboutText += "Original idea:\nhttps://github.com/Gargaj/ShoutVST\n";
   buffer_about->text(aboutText.c_str());
@@ -61,7 +61,7 @@ ShoutVSTEditorFL::ShoutVSTEditorFL() {
     { Fl_Button* o = new Fl_Button(215, 225, 160, 45, "OK");
       o->callback((Fl_Callback*)cb_OK);
     } // Fl_Button* o
-    { Fl_Text_Display* o = new Fl_Text_Display(1, 40, 385, 155, "ShoutVST 2.1.0.0");
+    { Fl_Text_Display* o = new Fl_Text_Display(1, 40, 385, 155, "ShoutVST");
       o->box(FL_NO_BOX);
       o->labeltype(FL_ENGRAVED_LABEL);
       o->labelsize(34);

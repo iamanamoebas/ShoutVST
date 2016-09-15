@@ -8,18 +8,20 @@ class ShoutVSTEditorFL {open
   } {
     code {buffer_about = new Fl_Text_Buffer();
 string aboutText = "";
-aboutText += (string("Built on ") + string(__DATE__) + string(" (") + string(__TIME__) + string(")\\n"));
-aboutText += (string("CMake version: ") + string(CMAKE_VERSION) + string("\\n"));
-aboutText += (string("Compiler: ") + string(CMAKE_GENERATOR) + string("\\n"));
-//aboutText += (string("CPU: ") + string(CMAKE_SYSTEM_PROCESSOR) + string("\\n"));
+aboutText = "Version: "+string(SHOUTVST_FULL_VERSION_STR)+"\\n\\n";
+aboutText += ("Built on " + string(__DATE__) + " (" + string(__TIME__) + ")\\n");
+aboutText += ("CMake version: " + string(CMAKE_VERSION) + "\\n");
+aboutText += ("Compiler: " + string(CMAKE_GENERATOR) + "\\n");
 aboutText += "\\n";
 aboutText += "Original idea:\\nhttps://github.com/Gargaj/ShoutVST\\n";
-buffer_about->text(aboutText.c_str());} {}
+buffer_about->text(aboutText.c_str());} {selected
+    }
     Fl_Window about_window {
       label {About ShoutVST} open
-      private xywh {1352 523 403 288} type Double align 80 hotspot
+      private xywh {474 257 403 288} type Double align 80 hotspot
       code0 {\#include "comp_definitions.h"}
-      code1 {\#include <FL/filename.H>} size_range {403 288 403 288} visible
+      code1 {\#include <FL/filename.H>}
+      code2 {\#include "../version.h"} size_range {403 288 403 288} visible
     } {
       Fl_Button {} {
         label OK
@@ -27,7 +29,7 @@ buffer_about->text(aboutText.c_str());} {}
         private xywh {215 225 160 45}
       }
       Fl_Text_Display {} {
-        label {ShoutVST 2.1.0.0}
+        label ShoutVST
         private xywh {1 40 385 155} box NO_BOX labeltype ENGRAVED_LABEL labelsize 34 align 5
         code0 {o->buffer(buffer_about);}
       }
@@ -38,8 +40,8 @@ buffer_about->text(aboutText.c_str());} {}
         code0 {o->labelcolor(FL_DARK_BLUE);}
       }
     }
-    Fl_Window fl_window {open selected
-      xywh {992 346 677 480} type Double color 7 align 80 hotspot
+    Fl_Window fl_window {open
+      xywh {571 169 677 480} type Double color 7 align 80 hotspot
       code0 {\#include <string>}
       code1 {using std::string;}
       code2 {\#include <functional>} noborder size_range {667 486 667 486} visible

@@ -1,5 +1,6 @@
 #include "ShoutVST.h"
 #include <thread>
+#include "version.h"
 
 typedef std::lock_guard<std::recursive_mutex> guard;
 
@@ -7,7 +8,7 @@ AudioEffect* createEffectInstance(audioMasterCallback audioMaster) {
 	return new ShoutVST(audioMaster);
 }
 
-VstInt32 ShoutVST::getVendorVersion() { return 2100; }
+VstInt32 ShoutVST::getVendorVersion() { return SHOUTVST_VERSION_INT; }
 
 VstPlugCategory ShoutVST::getPlugCategory() { return kPlugCategEffect; }
 

@@ -6,6 +6,7 @@
 #include <FL/Fl_Double_Window.H>
 #include "comp_definitions.h"
 #include <FL/filename.H>
+#include "../version.h"
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Text_Display.H>
 #include <string>
