@@ -25,7 +25,7 @@ class ShoutVST : public AudioEffectX {
   void UpdateMetadata(const string& metadata);
 
  private:
-  std::atomic<bool> bStreamConnected = false;
+  std::atomic<bool> bStreamConnected;
   ShoutVSTEncoder* encSelected = nullptr;
   ShoutVSTEncoderOGG* encOGG = nullptr;
   ShoutVSTEncoderMP3* encMP3 = nullptr;

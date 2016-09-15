@@ -12,7 +12,7 @@ VstInt32 ShoutVST::getVendorVersion() { return SHOUTVST_VERSION_INT; }
 VstPlugCategory ShoutVST::getPlugCategory() { return kPlugCategEffect; }
 
 ShoutVST::ShoutVST(audioMasterCallback audioMaster)
-	: AudioEffectX(audioMaster, 1, 0) {
+	: AudioEffectX(audioMaster, 1, 0),bStreamConnected(false){
 	setNumInputs(2);
 	setNumOutputs(2);
 	setUniqueID(CCONST('b', 'q', '9', 'e'));
