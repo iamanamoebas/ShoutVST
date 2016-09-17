@@ -5,6 +5,8 @@ You can try that precompiled binary (Just copy it into your VST plugins folder):
 <img src="http://jsound.org/img/download.jpg" alt="ShoutVST Download" height="175" width="350">
 </a>
 
+You can also download the latest version from KVR: https://www.kvraudio.com/product/shoutvst-by-r-tur
+
 ![ShoutVST](https://static.kvraudio.com/i/b/shoutvst.jpg "ShoutVST")
 
 #Prerequisites#
