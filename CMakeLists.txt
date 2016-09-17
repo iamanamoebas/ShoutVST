@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.0)
 
 project (ShoutVST_Solution)
 
-set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/ShoutVST_DLL")
-
 set(CMAKE_BUILD_TYPE Release)
 
 if((${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC))

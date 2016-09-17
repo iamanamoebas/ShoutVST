@@ -2,6 +2,8 @@ project (ShoutVST)
 
 set (CMAKE_CXX_STANDARD 11)
 
+set(LIBRARY_OUTPUT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../ShoutVST_DLL")
+
 include_directories (${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/../ SOURCES)
