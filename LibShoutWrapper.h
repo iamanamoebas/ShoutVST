@@ -3,6 +3,7 @@
 #include <shout/shout.h>
 #include <mutex>
 #include <string>
+#include <atomic>
 
 using std::string;
 using std::recursive_mutex;
@@ -13,8 +14,10 @@ class LibShoutWrapper {
   typedef std::lock_guard<std::recursive_mutex> guard;
   recursive_mutex mtx;
   shout_t *pShout = nullptr;
+  std::atomic<bool> isConnected;
 
  public:
+  LibShoutWrapper();
   ~LibShoutWrapper();
   bool InitializeICECasting(
       const string &hostname, const string &protocol, unsigned short port,

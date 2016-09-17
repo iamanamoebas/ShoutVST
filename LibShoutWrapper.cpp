@@ -1,5 +1,9 @@
 #include "LibShoutWrapper.h"
 
+LibShoutWrapper::LibShoutWrapper():isConnected(false){
+	
+}
+
 LibShoutWrapper::~LibShoutWrapper() { StopICECasting(); }
 
 bool LibShoutWrapper::InitializeICECasting(
@@ -9,18 +13,17 @@ bool LibShoutWrapper::InitializeICECasting(
     const string &bitrate, const string &targetsamplerate, const string &artist,
     const string &title, const string &username, const string &password,
     const string &mountpoint, const string &format) {
-  guard lock(mtx);
-  if (pShout) {
+  if (isConnected) {
     return false;
   }
   shout_init();
-  shout_t *shout = nullptr;
-  if (!(shout = shout_new())) {
-    return false;
+  shout_t *tmp = nullptr;
+  if (!(tmp = shout_new())) {
+    goto err;
   }
 
-  if (shout_set_host(shout, hostname.c_str()) != SHOUTERR_SUCCESS) {
-    return false;
+  if (shout_set_host(tmp, hostname.c_str()) != SHOUTERR_SUCCESS) {
+    goto err;
   }
 
   int shout_proto = SHOUT_PROTOCOL_HTTP;
@@ -34,46 +37,46 @@ bool LibShoutWrapper::InitializeICECasting(
     shout_proto = SHOUT_PROTOCOL_ROARAUDIO;
   }
 
-  if (shout_set_protocol(shout, shout_proto) != SHOUTERR_SUCCESS) {
-    return false;
+  if (shout_set_protocol(tmp, shout_proto) != SHOUTERR_SUCCESS) {
+    goto err;
   }
 
-  if (shout_set_port(shout, port) != SHOUTERR_SUCCESS) {
-    return false;
+  if (shout_set_port(tmp, port) != SHOUTERR_SUCCESS) {
+    goto err;
   }
 
-  shout_set_agent(shout, "ShoutVST");
+  shout_set_agent(tmp, "ShoutVST");
 
-  if (!streamname.empty()) shout_set_name(shout, streamname.c_str());
+  if (!streamname.empty()) shout_set_name(tmp, streamname.c_str());
 
-  if (!streamurl.empty()) shout_set_url(shout, streamurl.c_str());
+  if (!streamurl.empty()) shout_set_url(tmp, streamurl.c_str());
 
-  if (!streamgenre.empty()) shout_set_genre(shout, streamgenre.c_str());
+  if (!streamgenre.empty()) shout_set_genre(tmp, streamgenre.c_str());
 
   if (!streamdescription.empty())
-    shout_set_description(shout, streamdescription.c_str());
+    shout_set_description(tmp, streamdescription.c_str());
 
-  shout_set_audio_info(shout, SHOUT_AI_BITRATE, bitrate.c_str());
+  shout_set_audio_info(tmp, SHOUT_AI_BITRATE, bitrate.c_str());
 
-  shout_set_audio_info(shout, SHOUT_AI_SAMPLERATE, targetsamplerate.c_str());
+  shout_set_audio_info(tmp, SHOUT_AI_SAMPLERATE, targetsamplerate.c_str());
 
-  if (!artist.empty()) shout_set_audio_info(shout, "artist", artist.c_str());
+  if (!artist.empty()) shout_set_audio_info(tmp, "artist", artist.c_str());
 
-  if (!title.empty()) shout_set_audio_info(shout, "title", title.c_str());
+  if (!title.empty()) shout_set_audio_info(tmp, "title", title.c_str());
 
-  if (shout_set_user(shout, username.c_str()) != SHOUTERR_SUCCESS) {
-    return false;
+  if (shout_set_user(tmp, username.c_str()) != SHOUTERR_SUCCESS) {
+    goto err;
   }
 
-  if (shout_set_password(shout, password.c_str()) != SHOUTERR_SUCCESS) {
-    return false;
+  if (shout_set_password(tmp, password.c_str()) != SHOUTERR_SUCCESS) {
+    goto err;
   }
 
-  if (shout_set_mount(shout, mountpoint.c_str()) != SHOUTERR_SUCCESS) {
-    return false;
+  if (shout_set_mount(tmp, mountpoint.c_str()) != SHOUTERR_SUCCESS) {
+    goto err;
   }
 
-  shout_set_public(shout, 1);
+  shout_set_public(tmp, 1);
 
   unsigned int shout_format = 0;
 
@@ -85,22 +88,35 @@ bool LibShoutWrapper::InitializeICECasting(
     shout_format = SHOUT_FORMAT_OGG;
   }
 
-  if (shout_set_format(shout, shout_format) != SHOUTERR_SUCCESS) {
-    return false;
+  if (shout_set_format(tmp, shout_format) != SHOUTERR_SUCCESS) {
+    goto err;
   }
 
-  if (shout_open(shout) != SHOUTERR_SUCCESS) {
-    return false;
+  if (shout_open(tmp) != SHOUTERR_SUCCESS) {
+    shout_close(tmp);
+	goto err;
   }
-  pShout = shout;
-
-  return true;
+  {guard lock(mtx);
+  if(pShout){
+	  goto err;
+  }
+  pShout = tmp;
+  isConnected = true;
+  return true;}
+  
+  err:
+  if(tmp){
+    shout_free(tmp);
+	tmp = nullptr;
+  }
+  return false;
 }
 
 void LibShoutWrapper::StopICECasting() {
-  shout_shutdown();
   guard lock(mtx);
   if (pShout) {
+    shout_shutdown();
+    isConnected = false;
     shout_close(pShout);
     shout_free(pShout);
     pShout = nullptr;
@@ -108,7 +124,7 @@ void LibShoutWrapper::StopICECasting() {
 }
 
 bool LibShoutWrapper::SendDataToICE(unsigned char *pData, size_t nLen) {
-  if (!pShout) {
+  if (!isConnected) {
     return false;
   }
   guard lock(mtx);
@@ -126,7 +142,7 @@ bool LibShoutWrapper::SendDataToICE(unsigned char *pData, size_t nLen) {
 }
 
 void LibShoutWrapper::UpdateMetadata(const char *sz) {
-  if (!pShout) return;
+  if (!isConnected) return;
   guard lock(mtx);
   if (!pShout) return;
   shout_metadata_t *meta = shout_metadata_new();

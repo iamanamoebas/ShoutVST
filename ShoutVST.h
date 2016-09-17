@@ -6,6 +6,7 @@
 #include "ShoutVSTEncoderOGG.h"
 
 #include <atomic>
+#include <mutex>
 
 class ShoutVST : public AudioEffectX {
  public:
@@ -31,4 +32,6 @@ class ShoutVST : public AudioEffectX {
   ShoutVSTEncoderMP3* encMP3 = nullptr;
   ShoutVSTEditor* pEditor = nullptr;
   LibShoutWrapper libShoutWrapper;
+  typedef std::lock_guard<std::mutex> guard;
+  std::mutex connectMTX;
 };

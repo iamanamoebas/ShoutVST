@@ -29,7 +29,6 @@ void ShoutVSTEditor::callbackConnect(ShoutVSTEditor* p) {
 }
 
 void ShoutVSTEditor::callbackDisconnect(ShoutVSTEditor* p) {
-	guard lock(mtx_);
 	p->pVST->disconnect();
 }
 
