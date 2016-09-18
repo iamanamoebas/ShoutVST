@@ -12,13 +12,13 @@ echo OGG-Vorbis...
 if not exist OGG-Vorbis-CMAKE (
     (git clone https://github.com/R-Tur/OGG-Vorbis-CMAKE.git)
 ) else (
-    (cd libmp3lame-CMAKE) && (git pull) && (cd ..)
+    (cd OGG-Vorbis-CMAKE) && (git pull) && (cd ..)
 )
 echo libshout...
 if not exist libshout-CMAKE (
     (git clone https://github.com/R-Tur/libshout-CMAKE.git)
 ) else (
-    (cd libmp3lame-CMAKE) && (git pull) && (cd ..)
+    (cd libshout-CMAKE) && (git pull) && (cd ..)
 )
 
 echo FLTK...
@@ -32,7 +32,7 @@ echo VST_SDK_2.4...
 if not exist VST_SDK_2.4 (
     (git clone https://github.com/R-Tur/VST_SDK_2.4.git)
 ) else (
-    (cd libmp3lame-CMAKE) && (git pull) && (cd ..)
+    (cd VST_SDK_2.4) && (git pull) && (cd ..)
 )
 
 
