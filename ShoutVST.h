@@ -6,7 +6,6 @@
 #include "ShoutVSTEncoderOGG.h"
 
 #include <atomic>
-#include <mutex>
 
 class ShoutVST : public AudioEffectX {
  public:
@@ -27,11 +26,10 @@ class ShoutVST : public AudioEffectX {
 
  private:
   std::atomic<bool> bStreamConnected;
+  std::atomic<bool> bConnecting;
   ShoutVSTEncoder* encSelected = nullptr;
   ShoutVSTEncoderOGG* encOGG = nullptr;
   ShoutVSTEncoderMP3* encMP3 = nullptr;
   ShoutVSTEditor* pEditor = nullptr;
   LibShoutWrapper libShoutWrapper;
-  typedef std::lock_guard<std::mutex> guard;
-  std::mutex connectMTX;
 };

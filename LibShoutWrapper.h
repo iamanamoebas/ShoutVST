@@ -15,6 +15,7 @@ class LibShoutWrapper {
   recursive_mutex mtx;
   shout_t *pShout = nullptr;
   std::atomic<bool> isConnected;
+  bool abort = false;
 
  public:
   LibShoutWrapper();
@@ -28,6 +29,8 @@ class LibShoutWrapper {
       const string &password, const string &mountpoint, const string &format);
 
   void StopICECasting();
+
+  bool waitForConnect();
 
   bool SendDataToICE(unsigned char *pData, size_t nLen);
 

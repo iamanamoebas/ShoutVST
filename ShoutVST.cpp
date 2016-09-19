@@ -2,6 +2,7 @@
 #include <thread>
 #include "version.h"
 
+
 AudioEffect* createEffectInstance(audioMasterCallback audioMaster) {
   return new ShoutVST(audioMaster);
 }
@@ -11,7 +12,7 @@ VstInt32 ShoutVST::getVendorVersion() { return SHOUTVST_VERSION_INT; }
 VstPlugCategory ShoutVST::getPlugCategory() { return kPlugCategEffect; }
 
 ShoutVST::ShoutVST(audioMasterCallback audioMaster)
-    : AudioEffectX(audioMaster, 1, 0), bStreamConnected(false) {
+    : AudioEffectX(audioMaster, 1, 0), bStreamConnected(false), bConnecting(false){
   setNumInputs(2);
   setNumOutputs(2);
   setUniqueID(CCONST('b', 'q', '9', 'e'));
@@ -70,6 +71,10 @@ void ShoutVST::connect() {
     return;
   }
   std::thread t([this]() {
+	  if (bConnecting) {
+		  return;
+	  }
+	  bConnecting = true;
     const bool icecastingInitialized = libShoutWrapper.InitializeICECasting(
         pEditor->getHostName(), pEditor->getProtocol(), pEditor->getPort(),
         pEditor->getStreamName(), pEditor->getStreamURL(),
@@ -78,15 +83,21 @@ void ShoutVST::connect() {
         pEditor->getStreamArtist(), pEditor->getStreamTitle(),
         pEditor->getUserName(), pEditor->getPassword(),
         pEditor->getMountPoint(), pEditor->getEncodingFormat());
-    {guard lock(connectMTX);
-    //if stream was already connected by another thread
-    if (bStreamConnected) return;
-
+   
     if (!icecastingInitialized) {
       libShoutWrapper.StopICECasting();
       pEditor->DisableAccordingly();
+	  bConnecting = false;
       return;
     }
+
+	const bool connectedToServer = libShoutWrapper.waitForConnect();
+	if (!connectedToServer) {
+		libShoutWrapper.StopICECasting();
+		pEditor->DisableAccordingly();
+		bConnecting = false;
+		return;
+	}
 
     if (pEditor->getEncodingFormat() == "mp3") {
       encSelected = encMP3;
@@ -100,18 +111,19 @@ void ShoutVST::connect() {
                                  GetTargetSampleRate())) {
       libShoutWrapper.StopICECasting();
       pEditor->DisableAccordingly();
+	  bConnecting = false;
       return;
     }
 
     bStreamConnected = true;
 
-    pEditor->DisableAccordingly();}
+    pEditor->DisableAccordingly();
+	bConnecting = false;
   });
   t.detach();
 }
 
 void ShoutVST::disconnect() {
-  guard lock(connectMTX);
   encSelected->Close();
   libShoutWrapper.StopICECasting();
   bStreamConnected = false;

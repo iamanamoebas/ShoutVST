@@ -1,8 +1,12 @@
 #include "LibShoutWrapper.h"
 
+#include <thread>
+#include <chrono> 
+
 LibShoutWrapper::LibShoutWrapper():isConnected(false){
 	
 }
+
 
 LibShoutWrapper::~LibShoutWrapper() { StopICECasting(); }
 
@@ -16,6 +20,8 @@ bool LibShoutWrapper::InitializeICECasting(
   if (isConnected) {
     return false;
   }
+  guard lock(mtx);
+  abort = false;
   shout_init();
   shout_t *tmp = nullptr;
   if (!(tmp = shout_new())) {
@@ -92,17 +98,21 @@ bool LibShoutWrapper::InitializeICECasting(
     goto err;
   }
 
-  if (shout_open(tmp) != SHOUTERR_SUCCESS) {
-    shout_close(tmp);
+  if (shout_set_nonblocking(tmp, 1) != SHOUTERR_SUCCESS) {
+	  goto err;
+  }
+  const int ret = shout_open(tmp);
+  if (ret != SHOUTERR_SUCCESS && ret != SHOUTERR_BUSY) {
 	goto err;
   }
-  {guard lock(mtx);
+
   if(pShout){
+	  shout_close(tmp);
 	  goto err;
   }
   pShout = tmp;
-  isConnected = true;
-  return true;}
+
+  return true;
   
   err:
   if(tmp){
@@ -112,15 +122,37 @@ bool LibShoutWrapper::InitializeICECasting(
   return false;
 }
 
+bool LibShoutWrapper::waitForConnect() {
+	int ret = SHOUTERR_BUSY;
+	size_t counter = 0;
+	while (ret == SHOUTERR_BUSY) {
+		if (counter++ > 50) {
+			return false;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		guard lock(mtx);
+		if (abort) {
+			return false;
+		}
+		ret = shout_get_connected(pShout);
+		if (SHOUTERR_CONNECTED == ret) {
+			isConnected = true;
+			return true;
+		}
+	}
+	return false;
+}
+
 void LibShoutWrapper::StopICECasting() {
   guard lock(mtx);
+  abort = true;
+  isConnected = false;
   if (pShout) {
-    shout_shutdown();
-    isConnected = false;
     shout_close(pShout);
     shout_free(pShout);
     pShout = nullptr;
   }
+  shout_shutdown();
 }
 
 bool LibShoutWrapper::SendDataToICE(unsigned char *pData, size_t nLen) {
@@ -131,12 +163,12 @@ bool LibShoutWrapper::SendDataToICE(unsigned char *pData, size_t nLen) {
   if (!pShout) {
     return false;
   }
-  if (!pData || nLen <= 0) {
-    return true;
-  }
-  shout_sync(pShout);
-  if (shout_send(pShout, pData, nLen) < 0) {
+  int sent = shout_send(pShout, pData, nLen);
+  if (sent < 0) {
     return false;
+  }
+  if (sent > 0) {
+	  shout_sync(pShout);
   }
   return true;
 }
