@@ -40,10 +40,10 @@ buffer_about->text(aboutText.c_str());} {}
       }
     }
     Fl_Window fl_window {open
-      xywh {424 156 677 480} type Double color 7 align 80 hotspot
+      xywh {360 156 677 480} type Double color 7 align 80 hotspot
       code0 {\#include <string>}
       code1 {using std::string;}
-      code2 {\#include <functional>} size_range {667 486 667 486} visible
+      code2 {\#include <functional>} noborder size_range {667 486 667 486} visible
     } {
       Fl_Group group_connection {
         label {Connection:} open
@@ -78,8 +78,8 @@ buffer_about->text(aboutText.c_str());} {}
           private xywh {20 195 210 55}
         } {
           Fl_Round_Button proto_http {
-            label Icecast
-            private xywh {20 195 50 25} type Radio down_box ROUND_DOWN_BOX value 1
+            label Icecast selected
+            private xywh {20 195 90 25} type Radio down_box ROUND_DOWN_BOX value 1
           }
           Fl_Round_Button proto_xaudiocast {
             label {icecast 1.x}
@@ -87,7 +87,7 @@ buffer_about->text(aboutText.c_str());} {}
           }
           Fl_Round_Button proto_icy {
             label SHOUTcast
-            private xywh {20 215 45 25} type Radio down_box ROUND_DOWN_BOX
+            private xywh {20 215 95 25} type Radio down_box ROUND_DOWN_BOX
           }
           Fl_Round_Button proto_roaraudio {
             label RoarAudio
@@ -96,7 +96,7 @@ buffer_about->text(aboutText.c_str());} {}
         }
       }
       Fl_Group group_encoding {
-        label {Encoding:} open selected
+        label {Encoding:} open
         private xywh {10 270 280 130} box GTK_DOWN_BOX align 5
       } {
         Fl_Input encoding_bitrate {
