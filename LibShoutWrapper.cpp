@@ -137,7 +137,6 @@ bool LibShoutWrapper::waitForConnect() {
 		ret = shout_get_connected(pShout);
 		if (SHOUTERR_CONNECTED == ret) {
 			isConnected = true;
-			shout_set_nonblocking(pShout, 0);
 			return true;
 		}
 	}
