@@ -104,21 +104,21 @@ ShoutVSTEditorFL::ShoutVSTEditorFL() {
         connection_mountpoint->box(FL_GTK_DOWN_BOX);
         connection_mountpoint->value("/live");
       } // Fl_Input* connection_mountpoint
-      { Fl_Group* o = new Fl_Group(20, 195, 185, 55);
-        { proto_http = new Fl_Round_Button(20, 195, 50, 25, "http");
+      { Fl_Group* o = new Fl_Group(20, 195, 210, 55);
+        { proto_http = new Fl_Round_Button(20, 195, 50, 25, "Icecast");
           proto_http->type(102);
           proto_http->down_box(FL_ROUND_DOWN_BOX);
           proto_http->value(1);
         } // Fl_Round_Button* proto_http
-        { proto_xaudiocast = new Fl_Round_Button(70, 195, 95, 25, "xaudiocast");
+        { proto_xaudiocast = new Fl_Round_Button(125, 195, 95, 25, "icecast 1.x");
           proto_xaudiocast->type(102);
           proto_xaudiocast->down_box(FL_ROUND_DOWN_BOX);
         } // Fl_Round_Button* proto_xaudiocast
-        { proto_icy = new Fl_Round_Button(20, 215, 45, 25, "icy");
+        { proto_icy = new Fl_Round_Button(20, 215, 45, 25, "SHOUTcast");
           proto_icy->type(102);
           proto_icy->down_box(FL_ROUND_DOWN_BOX);
         } // Fl_Round_Button* proto_icy
-        { proto_roaraudio = new Fl_Round_Button(70, 215, 90, 25, "roaraudio");
+        { proto_roaraudio = new Fl_Round_Button(125, 215, 90, 25, "RoarAudio");
           proto_roaraudio->type(102);
           proto_roaraudio->down_box(FL_ROUND_DOWN_BOX);
         } // Fl_Round_Button* proto_roaraudio
@@ -210,7 +210,6 @@ ShoutVSTEditorFL::ShoutVSTEditorFL() {
       } // Fl_Button* o
       o->end();
     } // Fl_Group* o
-    fl_window->clear_border();
     fl_window->size_range(667, 486, 667, 486);
     fl_window->end();
   } // Fl_Double_Window* fl_window

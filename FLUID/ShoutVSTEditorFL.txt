@@ -9,10 +9,10 @@ Port:
 UserName:
 Password:
 Mountpoint:
-http
-xaudiocast
-icy
-roaraudio
+Icecast
+icecast 1.x
+SHOUTcast
+RoarAudio
 Encoding:
 Bitrate:
 Samplerate:
