@@ -52,9 +52,9 @@ void ShoutVST::processReplacing(float** inputs, float** outputs,
 	float* in2 = inputs[1];
 	float* out1 = outputs[0];
 	float* out2 = outputs[1];
-	while (--sampleFrames >= 0) {
-		(*out1++) = (*in1++);
-		(*out2++) = (*in2++);
+	for (VstInt32 i(0); i < sampleFrames; ++i) {
+		out1[i] = in1[i];
+		out2[i] = in2[i];
 	}
 	if (bStreamConnected) {
 		if (!encSelected->Process(inputs, sampleFrames)) {
