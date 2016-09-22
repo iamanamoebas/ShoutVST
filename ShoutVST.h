@@ -11,7 +11,8 @@ class ShoutVST : public AudioEffectX {
  public:
   explicit ShoutVST(audioMasterCallback audioMaster);
   ~ShoutVST();
-  virtual void processReplacing(float** inputs, float** outputs, VstInt32 sampleFrames) override;
+  virtual void processReplacing(float** inputs, float** outputs,
+                                VstInt32 sampleFrames) override;
   void connect();
   void disconnect();
   virtual bool getEffectName(char* name) override;

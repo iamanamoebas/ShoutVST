@@ -10,9 +10,6 @@
 #undef max
 #endif
 
-// note to self
-#define STEREO 2
-
 ShoutVSTEncoderMP3::ShoutVSTEncoderMP3(LibShoutWrapper& ls)
     : ShoutVSTEncoder(ls) {}
 
@@ -51,8 +48,6 @@ bool ShoutVSTEncoderMP3::Initialize(const int bitrate, const int samplerate,
   }
   pMP3Buffer = new BYTE[dwMP3Buffer];
   pWAVBuffer = new SHORT[dwSamples];
-  dwSamplesSoFar = 0;
-  dwSamples /= STEREO;
 
   bInitialized = true;
 
@@ -77,36 +72,20 @@ bool ShoutVSTEncoderMP3::Close() {
 bool ShoutVSTEncoderMP3::Process(float** inputs, VstInt32 sampleFrames) {
   guard lock(mtx_);
   if (!bInitialized) return false;
-
-  int nSamplesToProcess = sampleFrames;
-  int nInputPointer = 0;
-  while (nSamplesToProcess > 0) {
-    int nSampleRoom = dwSamples - dwSamplesSoFar;
-    int nSamplesProcessed = std::min(nSampleRoom, nSamplesToProcess);
-
-    SHORT* p = pWAVBuffer + dwSamplesSoFar * STEREO;
-    for (int i = 0; i < nSamplesProcessed; i++) {
-      *(p++) = (SHORT)(
-          std::min(1.0f, std::max(-1.0f, inputs[0][nInputPointer])) * 32767.0f);
-      *(p++) = (SHORT)(
-          std::min(1.0f, std::max(-1.0f, inputs[1][nInputPointer])) * 32767.0f);
-      nInputPointer++;
-    }
-    dwSamplesSoFar += nSamplesProcessed;
-
-    if (dwSamplesSoFar >= dwSamples) {
+  static size_t k = 0;
+  for (VstInt32 i(0); i < sampleFrames; i++) {
+    pWAVBuffer[k++] = (SHORT)(std::min(1.0f, std::max(-1.0f, inputs[0][i])) * 32767.0f);
+    pWAVBuffer[k++] = (SHORT)(std::min(1.0f, std::max(-1.0f, inputs[1][i])) * 32767.0f);
+    if (k >= dwSamples) {
+      k = 0;
       DWORD dwWrite = 0;
-      if (beEncodeChunk(hbeStream, dwSamples * STEREO, pWAVBuffer, pMP3Buffer,
-                        &dwWrite) != BE_ERR_SUCCESSFUL) {
+      if (beEncodeChunk(hbeStream, dwSamples, pWAVBuffer, pMP3Buffer, &dwWrite) != BE_ERR_SUCCESSFUL) {
         return false;
       }
-
-      if (!libshout.SendDataToICE(pMP3Buffer, dwWrite)) return false;
-      dwSamplesSoFar = 0;
+      if (!libshout.SendDataToICE(pMP3Buffer, dwWrite)) {
+        return false;
+      }
     }
-
-    nSamplesToProcess -= nSamplesProcessed;
   }
-
   return true;
 }

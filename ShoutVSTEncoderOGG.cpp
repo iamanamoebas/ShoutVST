@@ -8,7 +8,9 @@ ShoutVSTEncoderOGG::~ShoutVSTEncoderOGG() { Close(); }
 bool ShoutVSTEncoderOGG::Initialize(const int bitrate, const int samplerate,
                                     const int target_samplerate) {
   guard lock(mtx_);
-  bInitialized = false;
+  if (bInitialized) {
+    return false;
+  }
   int ret = 0;
   vorbis_info_init(&vi);
   long sample = (long)samplerate;
@@ -16,6 +18,7 @@ bool ShoutVSTEncoderOGG::Initialize(const int bitrate, const int samplerate,
   // ret = vorbis_encode_init_vbr(&vi,2,sample,10 / 10.0f);
   ret = vorbis_encode_init(&vi, 2, sample, br, br, br);
   if (ret) {
+    vorbis_info_clear(&vi);
     return false;
   }
 
@@ -24,8 +27,6 @@ bool ShoutVSTEncoderOGG::Initialize(const int bitrate, const int samplerate,
   vorbis_analysis_init(&vd, &vi);
   vorbis_block_init(&vd, &vb);
   ogg_stream_init(&os, rand());  // totally random number
-
-  bInitialized = true;
 
   {
     ogg_packet header;
@@ -38,11 +39,13 @@ bool ShoutVSTEncoderOGG::Initialize(const int bitrate, const int samplerate,
     ogg_stream_packetin(&os, &header_comm);
     ogg_stream_packetin(&os, &header_code);
 
+    bInitialized = true;
+
     while (true) {
       int result = ogg_stream_flush(&os, &og);
       if (result <= 0) break;
-
       if (!SendOGGPageToICE(&og)) {
+        Close();
         return false;
       }
     }

@@ -45,6 +45,5 @@ class ShoutVSTEditor : public AEffEditor {
  private:
   ShoutVSTEditorFL* shoutVSTEditorFL = nullptr;
   static recursive_mutex mtx_;
-  ERect r = {};
   ShoutVST* pVST = nullptr;
 };

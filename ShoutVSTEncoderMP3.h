@@ -15,7 +15,6 @@ class ShoutVSTEncoderMP3 : public ShoutVSTEncoder {
   HBE_STREAM hbeStream;
   DWORD dwSamples = 0;
   DWORD dwMP3Buffer = 0;
-  DWORD dwSamplesSoFar = 0;
   BYTE* pMP3Buffer = nullptr;
   SHORT* pWAVBuffer = nullptr;
 };

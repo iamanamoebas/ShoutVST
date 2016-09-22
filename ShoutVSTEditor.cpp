@@ -118,6 +118,7 @@ void ShoutVSTEditor::close() {
 }
 
 bool ShoutVSTEditor::getRect(ERect** erect) {
+	static ERect r = {};
 	r.right = shoutVSTEditorFL->fl_window->decorated_w();
 	r.bottom = shoutVSTEditorFL->fl_window->decorated_h();
 	*erect = &r;
