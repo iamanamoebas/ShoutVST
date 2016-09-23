@@ -9,7 +9,7 @@ You can try that precompiled binary (Just copy it into your VST plugins folder):
 
 #Prerequisites#
 
-[Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs)
+[Visual Studio 2013+](https://www.visualstudio.com/downloads/download-visual-studio-vs)
 
 [CMake >=3.0](https://cmake.org/download/)
 
