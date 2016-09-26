@@ -22,7 +22,7 @@ bool ShoutVSTEncoderMP3::Initialize(const int bitrate, const int samplerate,
     return false;
   }
   bInitialized = false;
-
+  k=0;
   hbeStream = NULL;
 
   // BE_VERSION v;
@@ -72,7 +72,6 @@ bool ShoutVSTEncoderMP3::Close() {
 bool ShoutVSTEncoderMP3::Process(float** inputs, VstInt32 sampleFrames) {
   guard lock(mtx_);
   if (!bInitialized) return false;
-  static size_t k = 0;
   for (VstInt32 i(0); i < sampleFrames; i++) {
     pWAVBuffer[k++] = (SHORT)(std::min(1.0f, std::max(-1.0f, inputs[0][i])) * 32767.0f);
     pWAVBuffer[k++] = (SHORT)(std::min(1.0f, std::max(-1.0f, inputs[1][i])) * 32767.0f);
