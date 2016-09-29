@@ -46,6 +46,7 @@ cmake -G "Visual Studio 14 2015 Win64" ..
 #Linux Build (e.g. UBUNTU)#
 
 ```
+sudo apt-get install build-essential
 sudo apt-get install libx11-dev
 ```
 
